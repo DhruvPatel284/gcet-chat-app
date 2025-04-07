@@ -83,6 +83,11 @@ const LoginPage = () => {
                   )}
                 </button>
               </div>
+              <div className="label justify-end">
+                <Link to="/forgot-password" className="label-text-alt link link-hover text-primary">
+                  Forgot Password?
+                </Link>
+              </div>
             </div>
 
             <button type="submit" className="btn btn-primary w-full" disabled={isLoggingIn}>
@@ -96,8 +101,6 @@ const LoginPage = () => {
               )}
             </button>
           </form>
-
-          
         </div>
       </div>
 
