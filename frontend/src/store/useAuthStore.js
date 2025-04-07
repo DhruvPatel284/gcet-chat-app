@@ -71,14 +71,61 @@ export const useAuthStore = create((set, get) => ({
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
-      const res = await axiosInstance.put("/auth/update-profile", data);
+      // Check if we're updating a profile picture or other user data
+      const isProfilePicUpdate = !!data.profilePic && Object.keys(data).length === 1;
+      
+      // Log what's being updated (without showing sensitive data)
+      console.log("Updating profile with fields:", Object.keys(data));
+      
+      const res = await axiosInstance.put(`/users/updateProfile`, data);
       set({ authUser: res.data });
-      toast.success("Profile updated successfully");
+      
+      // Only show toast if it's not a profile pic update (since we already show uploading status)
+      if (!isProfilePicUpdate) {
+        toast.success("Profile updated successfully");
+      }
+      
+      return res.data;
     } catch (error) {
-      console.log("error in update profile:", error);
-      toast.error(error.response.data.message);
+      console.error("Error in update profile:", error);
+      const errorMessage = error.response?.data?.message || "Failed to update profile";
+      toast.error(errorMessage);
     } finally {
       set({ isUpdatingProfile: false });
+    }
+  },
+  
+  // Password reset functionality
+  forgotPassword: async (email) => {
+    try {
+      await axiosInstance.post("/auth/forgot-password", { email });
+      toast.success("OTP sent to your email");
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send OTP");
+      return false;
+    }
+  },
+  
+  verifyOTP: async (email, otp) => {
+    try {
+      await axiosInstance.post("/auth/verify-otp", { email, otp });
+      toast.success("OTP verified successfully");
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Invalid OTP");
+      return false;
+    }
+  },
+  
+  resetPassword: async (email, password, otp) => {
+    try {
+      await axiosInstance.post("/auth/reset-password", { email, password, otp });
+      toast.success("Password reset successfully");
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to reset password");
+      return false;
     }
   },
 

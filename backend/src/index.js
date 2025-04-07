@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { app, server } from "./lib/socket.js";
 import adminRoutes from "./routes/admin.routes.js";
+import userRoutes from "./routes/user.route.js";
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 
 if (process.env.NODE_ENV === "production") {
